@@ -1,3 +1,6 @@
+// Copyright 2018 The ZikiChomgo Authors. All rights reserved.  Use of this source
+// code is governed by a license that can be found in the License file.
+
 // TODO: add seek support; only enabled in the dev branch of mewkiz/flac.
 
 // Note, ZikiChombo uses the terminology frame to refer to a single sample per
