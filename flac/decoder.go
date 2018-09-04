@@ -58,7 +58,7 @@ func (d *Decoder) Receive(dst []float64) (int, error) {
 			panic("cannot retrieve zero samples")
 		}
 		for c := 0; c < d.Channels(); c++ {
-			toFloats(dst[c*m:c*m+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
+			toFloats(dst[c*m+n:c*m+n+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
 		}
 		d.i += j
 		n += j
