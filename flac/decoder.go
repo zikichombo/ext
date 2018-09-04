@@ -9,7 +9,6 @@
 package flac
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/mewkiz/flac"
@@ -17,6 +16,7 @@ import (
 	"zikichombo.org/sound"
 	"zikichombo.org/sound/cil"
 	"zikichombo.org/sound/freq"
+	"zikichombo.org/sound/sample"
 )
 
 // Decoder encapsulates state for decoding and seeking a FLAC audio stream.
@@ -38,6 +38,21 @@ func NewDecoder(r io.Reader) (*Decoder, error) {
 	return d, nil
 }
 
+// Receive places samples in dst.
+//
+// Receive returns the number of frames placed in dst together with
+// any error.  Receive may use all of dst as scatch space.
+//
+// Receive returns a non-nil error if and only if it returns 0 frames
+// received.  Receive may return 0 < n < len(dst)/Channels() frames only
+// if the subsequent call will return (0, io.EOF).  As a result, the
+// caller need not be concerned with whether or not the data is "ready".
+//
+// Receive returns multi-channel data in de-interleaved format.
+// If len(dst) is not a multiple of Channels(), then Receive returns
+// ErrChannelAlignment.  If Receive returns fewer than len(dst)/Channels()
+// frames, then the deinterleaved data of n frames is arranged in
+// the prefix dst[:n*Channels()].
 func (d *Decoder) Receive(dst []float64) (int, error) {
 	nC := d.Channels()
 	if len(dst)%nC != 0 {
@@ -70,7 +85,7 @@ func (d *Decoder) Receive(dst []float64) (int, error) {
 			j = nF - n
 		}
 		for c := 0; c < nC; c++ {
-			toFloats(dst[c*nF+n:c*nF+n+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
+			sample.Int32sToFloats(dst[c*nF+n:c*nF+n+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
 		}
 		d.i += j
 		n += j
@@ -82,34 +97,17 @@ func (d *Decoder) Receive(dst []float64) (int, error) {
 	return n, nil
 }
 
+// Channels returns the number of channels of the FLAC stream.
 func (d *Decoder) Channels() int {
 	return int(d.stream.Info.NChannels)
 }
 
+// SampleRate returns the sample rate of the FLAC stream.
 func (d *Decoder) SampleRate() freq.T {
 	return freq.T(d.stream.Info.SampleRate) * freq.Hertz
 }
 
+// Close closes the underlying FLAC stream of the decoder.
 func (d *Decoder) Close() error {
 	return d.stream.Close()
-}
-
-// ### [ Helper functions ] ####################################################
-
-// Copied from sound/sample/fix.go and adjusted from int64 to int32.
-
-func toFloat(d int32, nBits int) float64 {
-	s := float64(int32(1 << uint(nBits-1)))
-	return float64(d) / s
-}
-
-func toFloats(dst []float64, src []int32, nBits int) []float64 {
-	if cap(dst) < len(src) {
-		panic(fmt.Errorf("capacity of dst too small; expected >= %d, got %d", cap(src), cap(dst)))
-	}
-	dst = dst[:len(src)]
-	for i, v := range src {
-		dst[i] = toFloat(v, nBits)
-	}
-	return dst
 }
