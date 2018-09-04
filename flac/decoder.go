@@ -1,13 +1,21 @@
 // TODO: add seek support; only enabled in the dev branch of mewkiz/flac.
 
+// Note, ZikiChombo uses the terminology frame to refer to a single sample per
+// channel. Thus, given an audio source with 100 samples and 2 channels, there
+// exist 50 frames. This is not to be confused with a FLAC frame, which is a
+// container for audio samples; where each FLAC frame contains one subframe per
+// channel, and each subframe contains the audio samples of a given channel.
+
 package flac
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/mewkiz/flac"
 	"github.com/mewkiz/flac/frame"
 	"zikichombo.org/sound"
+	"zikichombo.org/sound/cil"
 	"zikichombo.org/sound/freq"
 )
 
@@ -31,34 +39,38 @@ func NewDecoder(r io.Reader) (*Decoder, error) {
 }
 
 func (d *Decoder) Receive(dst []float64) (int, error) {
-	if len(dst)%d.Channels() != 0 {
+	nC := d.Channels()
+	if len(dst)%nC != 0 {
 		return 0, sound.ErrChannelAlignment
 	}
-	n := 0                       // number of frames (samples per channel) buffered.
-	m := len(dst) / d.Channels() // number of frames (samples per channel) to buffer.
+	// number of frames (samples per channel) read.
+	n := 0
+	// number of frames (samples per channel) to read.
+	nF := len(dst) / nC
 	bps := int(d.stream.Info.BitsPerSample)
-	for n < m {
+	for n < nF {
 		if d.frame == nil {
 			frame, err := d.stream.ParseNext()
 			if err != nil {
+				// Compact channel-interleaved samples if n < nF.
+				if err := cil.Compact(dst, nC, n); err != nil {
+					return n, err
+				}
 				return n, err
 			}
 			d.frame = frame
 			d.i = 0
 		}
 		samplesLeft := len(d.frame.Subframes[0].Samples[d.i:])
-		j := m
+		j := nF
 		if j > samplesLeft {
 			j = samplesLeft
 		}
-		if n+j > m {
-			j = m - n
+		if n+j > nF {
+			j = nF - n
 		}
-		if j == 0 {
-			panic("cannot retrieve zero samples")
-		}
-		for c := 0; c < d.Channels(); c++ {
-			toFloats(dst[c*m+n:c*m+n+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
+		for c := 0; c < nC; c++ {
+			toFloats(dst[c*nF+n:c*nF+n+j], d.frame.Subframes[c].Samples[d.i:d.i+j], bps)
 		}
 		d.i += j
 		n += j
@@ -66,12 +78,6 @@ func (d *Decoder) Receive(dst []float64) (int, error) {
 			d.frame = nil
 			d.i = 0
 		}
-	}
-	if n < m {
-		// TODO: handle n < m. Move frames in dst to their correct position
-		//
-		//    dst[c*n:(c+1)*n]
-		panic("flac.Decoder.Receive: reached end of stream with n < m; support for this case is not yet implemented;\n\nThe implementation should move frames (in ziki terminology) in dst to their correct position, i.e.\n\n   dst[c*n:(c+1)*n]")
 	}
 	return n, nil
 }
@@ -99,7 +105,7 @@ func toFloat(d int32, nBits int) float64 {
 
 func toFloats(dst []float64, src []int32, nBits int) []float64 {
 	if cap(dst) < len(src) {
-		panic("capacity of dst buffer too small")
+		panic(fmt.Errorf("capacity of dst too small; expected >= %d, got %d", cap(src), cap(dst)))
 	}
 	dst = dst[:len(src)]
 	for i, v := range src {
