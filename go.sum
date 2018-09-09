@@ -1,4 +1,11 @@
+github.com/jfreymuth/oggvorbis v1.0.0 h1:aOpiihGrFLXpsh2osOlEvTcg5/aluzGQeC7m3uYWOZ0=
+github.com/jfreymuth/oggvorbis v1.0.0/go.mod h1:abe6F9QRjuU9l+2jek3gj46lu40N4qlYxh2grqkLEDM=
+github.com/jfreymuth/vorbis v1.0.0 h1:SmDf783s82lIjGZi8EGUUaS7YxPHgRj4ZXW/h7rUi7U=
+github.com/jfreymuth/vorbis v1.0.0/go.mod h1:8zy3lUAm9K/rJJk223RKy6vjCZTWC61NA2QD06bfOE0=
 github.com/mewkiz/flac v1.0.5 h1:dHGW/2kf+/KZ2GGqSVayNEhL9pluKn/rr/h/QqD9Ogc=
 github.com/mewkiz/flac v1.0.5/go.mod h1:EHZNU32dMF6alpurYyKHDLYpW1lYpBZ5WrXi/VuNIGs=
+zikichombo.org/codec v0.0.1-alpha.3 h1:g09S6DOXyO56Q3rpwHL813dwEDeNIUoFhxCOk/8sk+Q=
+zikichombo.org/codec v0.0.1-alpha.3/go.mod h1:JQb94Z/twHniAfp0ydPKk8ibq61UoBMriWo7iQopcR8=
+zikichombo.org/sound v0.1.1-alpha.2/go.mod h1:akiZR7uLjsosCVBmP0t0hqsOgZ7iydYzjz92wFK2pLQ=
 zikichombo.org/sound v0.1.3-alpha.2 h1:VAYtcz14y/Rklv6YyOx31odGMva3Uf/0VvkcnuGL+Ws=
 zikichombo.org/sound v0.1.3-alpha.2/go.mod h1:akiZR7uLjsosCVBmP0t0hqsOgZ7iydYzjz92wFK2pLQ=
