@@ -2,7 +2,6 @@ package oggvorbis
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 
 	"github.com/jfreymuth/oggvorbis"
@@ -81,12 +80,7 @@ func (d *Decoder) Receive(out []float64) (int, error) {
 		in := d.buf[d.pos:]
 		for ch := 0; ch < channels; ch++ {
 			for i := 0; i < n; i++ {
-				iOut := ch*frames + framesRead + i
-				if iOut >= len(out) {
-					fmt.Println(ch, frames, framesRead, i)
-				}
-				out[ch*frames+framesRead+i] =
-					float64(in[i*channels+ch])
+				out[ch*frames+framesRead+i] = float64(in[i*channels+ch])
 			}
 		}
 		d.pos += n * channels
