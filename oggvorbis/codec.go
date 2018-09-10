@@ -12,34 +12,26 @@ import (
 	"zikichombo.org/sound/sample"
 )
 
-type Codec struct{}
+type oggvorbisCodec struct{ codec.NullCodec }
 
-func (*Codec) Extensions() []string { return []string{".ogg"} }
+func (*oggvorbisCodec) Extensions() []string { return []string{".ogg"} }
 
-func (*Codec) Sniff(r *bufio.Reader) bool {
+func (*oggvorbisCodec) Sniff(r *bufio.Reader) bool {
 	if peek, err := r.Peek(4); err == nil {
 		return string(peek) == "OggS"
 	}
 	return false
 }
 
-func (*Codec) DefaultSampleCodec() sample.Codec { return codec.AnySampleCodec }
-
-func (*Codec) Decoder(r io.ReadCloser) (sound.Source, sample.Codec, error) {
+func (*oggvorbisCodec) Decoder(r io.ReadCloser) (sound.Source, sample.Codec, error) {
 	return NewDecoder(r)
 }
-func (*Codec) SeekingDecoder(r codec.IoReadSeekCloser) (sound.SourceSeeker, sample.Codec, error) {
+func (*oggvorbisCodec) SeekingDecoder(r codec.IoReadSeekCloser) (sound.SourceSeeker, sample.Codec, error) {
 	return NewSeekingDecoder(r)
-}
-func (*Codec) Encoder(io.WriteCloser, sample.Codec) (sound.Sink, error) {
-	return nil, nil
-}
-func (*Codec) RandomAccess(codec.IoReadWriteSeekCloser, sample.Codec) (sound.RandomAccess, error) {
-	return nil, nil
 }
 
 func init() {
-	codec.RegisterCodec(&Codec{})
+	codec.RegisterCodec(&oggvorbisCodec{})
 }
 
 type Decoder struct {
