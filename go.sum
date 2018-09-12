@@ -8,6 +8,8 @@ zikichombo.org/codec v0.0.1-alpha.3 h1:g09S6DOXyO56Q3rpwHL813dwEDeNIUoFhxCOk/8sk
 zikichombo.org/codec v0.0.1-alpha.3/go.mod h1:JQb94Z/twHniAfp0ydPKk8ibq61UoBMriWo7iQopcR8=
 zikichombo.org/codec v0.0.1-alpha.3.0.20180910201825-9ab9f086867d59adb3be92c2a04860002e8e0a12 h1:/QnjLiAao/zdAVVsIc8DNHSPI5sH7/FRNE8l1FbpL+I=
 zikichombo.org/codec v0.0.1-alpha.3.0.20180910201825-9ab9f086867d59adb3be92c2a04860002e8e0a12/go.mod h1:uRVIrbR++yvTXb7CBdCY3luVaIn7pwEZVxYLxwMqU7k=
+zikichombo.org/codec v0.0.1-alpha.5 h1:jQ4vaYg00zNQJQ7PNLYNzLB1xnXubtn80aMTPn72tPs=
+zikichombo.org/codec v0.0.1-alpha.5/go.mod h1:uRVIrbR++yvTXb7CBdCY3luVaIn7pwEZVxYLxwMqU7k=
 zikichombo.org/sio v0.0.2-alpha.2 h1:jMgcpnIICt6seGi5r6Xg5qFbo1hnQKQ3gQg5yhkUy6Y=
 zikichombo.org/sio v0.0.2-alpha.2/go.mod h1:UO3TxS+i5wbp6FyWGSZOWjQQI+ankdlU4iB1F2XBsW8=
 zikichombo.org/sound v0.1.1-alpha.2/go.mod h1:akiZR7uLjsosCVBmP0t0hqsOgZ7iydYzjz92wFK2pLQ=
