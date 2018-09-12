@@ -9,4 +9,4 @@
 //
 // Consumers need to verify licensing transitively of all imports in package
 // ext.
-package ext /* import zikichombo.org/ext */
+package ext /* import "zikichombo.org/ext" */
